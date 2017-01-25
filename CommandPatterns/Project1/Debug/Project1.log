@@ -1,0 +1,7 @@
+﻿  MacroCommand.cpp
+c:\users\linh\desktop\sdltest\project1\macrocommand.cpp(9): warning C4018: '>': signed/unsigned mismatch
+c:\users\linh\desktop\sdltest\project1\macrocommand.cpp(22): warning C4018: '>': signed/unsigned mismatch
+  Game.cpp
+  Generating Code...
+  Project1.vcxproj -> C:\Users\linh\Desktop\SDLTest\Project1\Debug\Project1.exe
+  Project1.vcxproj -> C:\Users\linh\Desktop\SDLTest\Project1\Debug\Project1.pdb (Full PDB)

@@ -1,47 +1,58 @@
 #include "MacroCommand.h"
-MacroCommand::MacroCommand() : commands(std::list<Command*>()), mIndex(0){};
+MacroCommand::MacroCommand() : commands(std::vector<Command*>()), mIndex(0){};
 MacroCommand::~MacroCommand() {};
 
 void MacroCommand::execute() 
 {
 	if (!commands.empty())
-	{
-		if (commands.size() > mIndex)
-		{
-			std::list<Command*>::iterator it = commands.begin();
-			std::advance(it, mIndex);
-			(*it)->execute();
-			mIndex++;
-			// 'it' points to the element at index 'N'
-		}
+	{	
+		commands[mIndex]->execute();
+		mIndex++;
 	}
 }
 
 void MacroCommand::add(Command *c) {
-	commands.push_back(c);
-	if (commands.size() > mMaxSize)
+	std::vector<Command*>::iterator it = commands.begin();
+	
+	commands.insert(it + mIndex, c);
+	//delete any command after insert to a index
+	while (commands.size() != mIndex + 1)
 	{
-		commands.erase(commands.begin());
-		if (mIndex > 0)
-		{
-			mIndex--;
-		}
+		commands.pop_back();
 	}
 }
+
 void MacroCommand::remove(Command *c) {
-	commands.remove(c);
+
 }
 
 void MacroCommand::undo() {
-	
 	if (!commands.empty())
 	{
 		if (mIndex > 0)
 		{
-			mIndex--;
+			mIndex--;	
+			commands[mIndex]->undo();	
 		}
-		std::list<Command*>::iterator it = commands.begin();
-		std::advance(it, mIndex);
-		(*it)->undo();
+		else
+		{
+			std::cout << "undo fail - reach limit" << std::endl;
+		}
+	}
+}
+
+void MacroCommand::redo()
+{
+	if (!commands.empty())
+	{
+		if (mIndex < commands.size() )
+		{	
+			commands[mIndex]->redo();
+			mIndex++;
+		}
+		else
+		{
+			std::cout << "redo fail - reach limit" << std::endl;
+		}
 	}
 }

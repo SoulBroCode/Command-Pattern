@@ -1,6 +1,7 @@
 #pragma once
 #include "Command.h"
-#include <list>
+#include <vector>
+#include <iostream>
 class MacroCommand : public Command {
 public:
 	MacroCommand();
@@ -9,8 +10,8 @@ public:
 	virtual void remove(Command*);
 	virtual void execute();
 	virtual void undo();
+	virtual void redo();
 private:
-	const int mMaxSize = 5;
 	int	mIndex;
-	std::list<Command*> commands;
+	std::vector<Command*> commands;
 };

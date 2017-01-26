@@ -7,6 +7,8 @@ public:
 	~Actor();
 
 	void jump();
-	void fireGun();
+	void fire();
+	void move();
+	void walk();
 };
 

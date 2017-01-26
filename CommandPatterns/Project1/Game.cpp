@@ -25,21 +25,26 @@ bool Game::Initialize(const char* title, int xpos, int ypos, int width, int heig
 			if(m_p_Renderer != 0)
 			{
 				SDL_SetRenderDrawColor(m_p_Renderer, 255, 255, 255, 255);
-				count = 0;
+
 				mActor = new Actor();
 				mInputHandler = new InputHandler();
 				mMacroCommand = new MacroCommand();
 
-
-
-				mInputHandler->bindKeyCommand(SDLK_a, new JumpCommand(mActor));
-				mInputHandler->bindKeyCommand(SDLK_d, new JumpCommand(mActor));
+				Command* fireCommand = new FireCommand(mActor);
+				Command* walkCommand = new WalkCommand(mActor);
+				Command* jumpCommand = new JumpCommand(mActor);
+				Command* moveCommand = new MoveCommand(mActor);
+				
+				//binding the commands to a map
+				mInputHandler->bindKeyCommand(SDLK_a, new FireCommand(mActor));
+				mInputHandler->bindKeyCommand(SDLK_d, new WalkCommand(mActor));
 				mInputHandler->bindKeyCommand(SDLK_w, new JumpCommand(mActor));
-				mInputHandler->bindKeyCommand(SDLK_s, new JumpCommand(mActor));
+				mInputHandler->bindKeyCommand(SDLK_s, new MoveCommand(mActor));
 
-				//mInputHandler->bindKeyCommand(SDLK_RETURN, mMacroCommand);
-				//mInputHandler->bindKeyCommand(SDLK_BACKSPACE, new JumpCommand(mActor));
-
+				mInputHandler->bindKeyCommand(SDLK_LEFT, new FireCommand(mActor));
+				mInputHandler->bindKeyCommand(SDLK_RIGHT, new WalkCommand(mActor));
+				mInputHandler->bindKeyCommand(SDLK_UP, new JumpCommand(mActor));
+				mInputHandler->bindKeyCommand(SDLK_DOWN, new MoveCommand(mActor));
 			}
 			else
 			{
@@ -74,11 +79,6 @@ void Game::LoadContent()
 		m_Destination.y = m_Source.y = 0;
 		m_Destination.w = m_Source.w;
 		m_Destination.h = m_Source.h;
-
-		//DEBUG_MSG("Destination X:" + m_Destination.x);
-		/*DEBUG_MSG("Destination Y:" + m_Destination.y);
-		DEBUG_MSG("Destination W:" + m_Destination.w);
-		DEBUG_MSG("Destination H:" + m_Destination.h);*/
 	}
 	else
 	{
@@ -89,26 +89,16 @@ void Game::LoadContent()
 void Game::Render()
 {
 	SDL_RenderClear(m_p_Renderer);
-
-	/*
-	if(m_p_Renderer != nullptr && m_p_Texture != nullptr)
-		SDL_RenderCopy(m_p_Renderer, m_p_Texture, NULL, NULL);*/
 	SDL_RenderPresent(m_p_Renderer);
 }
 
 void Game::Update()
 {
-	//mMacroCommand->execute();
-	//count++;
-	//std::cout << "output : " << count << std::endl;
-	//DEBUG_MSG("Updating....");
+
 }
 
 void Game::HandleEvents()
 {
-
-
-
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event))
@@ -121,23 +111,18 @@ void Game::HandleEvents()
 			if (command != nullptr)
 			{
 				mMacroCommand->add(command);
+				mMacroCommand->execute();
 			}
 			else if (key == SDLK_RETURN)
 			{
-				mMacroCommand->execute();
+				mMacroCommand->redo();
 			}
 			else if (key == SDLK_BACKSPACE)
 			{
 				mMacroCommand->undo();
-			}
-			
+			}			
 		}
-
-
 	}
-
-
-
 }
 
 bool Game::IsRunning()
